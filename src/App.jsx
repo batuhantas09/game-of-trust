@@ -11,7 +11,7 @@ let firebaseConfig;
 let appId = 'default-app-id';
 
 try {
-    if (typeof import.meta.env !== 'undefined' && import.meta.env.VITE_FIREBASE_CONFIG) {
+    if (import.meta.env.VITE_FIREBASE_CONFIG) {
         // Priority 1: Vite environment (your local machine / Vercel)
         firebaseConfig = JSON.parse(import.meta.env.VITE_FIREBASE_CONFIG);
     } else if (typeof __firebase_config !== 'undefined' && __firebase_config) {
@@ -385,32 +385,6 @@ const AdminLoginModal = ({ onLogin, onClose }) => {
     );
 };
 
-// NEW DEBUG COMPONENT
-const VercelDebugInfo = () => {
-    if (typeof import.meta.env !== 'undefined' && import.meta.env.PROD) {
-        const configValue = import.meta.env.VITE_FIREBASE_CONFIG || "NOT SET";
-        let parsedStatus = "Not attempted";
-        let parsedAppId = "N/A";
-        try {
-            const parsed = JSON.parse(configValue);
-            parsedStatus = "Successfully Parsed";
-            parsedAppId = parsed.appId || "Not found in object";
-        } catch (e) {
-            parsedStatus = `Failed to parse: ${e.message}`;
-        }
-
-        return (
-            <div style={{ position: 'fixed', bottom: '50px', left: '10px', backgroundColor: 'rgba(0,0,0,0.8)', color: 'white', padding: '10px', borderRadius: '5px', zIndex: 1000, fontSize: '12px', border: '1px solid red' }}>
-                <h4>Vercel Debug Info</h4>
-                <p><strong>VITE_FIREBASE_CONFIG:</strong> <code style={{ wordBreak: 'break-all' }}>{configValue}</code></p>
-                <p><strong>Parsing Status:</strong> {parsedStatus}</p>
-                <p><strong>Parsed App ID:</strong> {parsedAppId}</p>
-            </div>
-        );
-    }
-    return null;
-};
-
 
 export default function App() {
     const [userId, setUserId] = useState(null);
@@ -603,7 +577,6 @@ export default function App() {
             </footer>
             {showAdminLogin && <AdminLoginModal onLogin={handleAdminLogin} onClose={() => setShowAdminLogin(false)} />}
             {isAdmin && <AdminPanel onRunTournament={runGrandTournament} onResetScores={resetScores} onClearArena={clearArena} isRunning={isTournamentRunning} />}
-            <VercelDebugInfo />
         </div>
     );
 }
